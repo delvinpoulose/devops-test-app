@@ -4,23 +4,22 @@ FROM python:3.12-slim
 # Set working directory
 WORKDIR /app
 
-# Install system dependencies (if needed by mysql-connector)
+# Install system dependencies (for compiling some Python packages like mysql-connector)
 RUN apt-get update && apt-get install -y \
     gcc \
     pkg-config \
-    uvicorn\
  && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements (if you have one)
+# Copy requirements first (better for Docker cache)
 COPY requirements.txt .
 
-# Install dependencies
+# Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the app code
+# Copy the rest of the app code
 COPY . .
 
-# Expose port (Uvicorn default)
+# Expose port for Uvicorn
 EXPOSE 8000
 
 # Command to run FastAPI server
